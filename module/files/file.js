@@ -23,4 +23,4 @@ fs.appendFileSync("./test.txt", `${Date.now()}hey there \n`);
 
 // fs.cpSync("./test.txt", "./copy.txt");
 
-fs.unlinkSync("./copy.txt");
+// fs.unlinkSync("./copy.txt");
