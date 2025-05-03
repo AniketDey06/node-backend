@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
-const users = require("./MOCK_DATA.json")
+const users = require("./MOCK_DATA.json");
+const { log } = require("console");
 
 const app = express();
 const PORT = 8000;
@@ -10,7 +11,7 @@ app.use(express.urlencoded({extended: false}));
 
 app.use((req, res, next) => {
     fs.appendFile('log.txt', 
-        `\n${Date.now()} - ${req.ip} - ${req.method} -${req.path}`,
+        `\n${Date.now()} - ${req.ip} - ${req.method} - ${req.path}`,
         (err, data) => {
             next();
         }
@@ -49,10 +50,24 @@ app.route('/api/users/:id')
     })
     .patch((req, res) => {
         const id = Number(req.params.id);
-        res.json({status: 'Pending put'})
+        const body = req.body;
+
+        const idx = users.findIndex((user) => user.id === id);
+
+        users[idx] = {
+            ...users[idx],
+            ...body
+        }
+
+        console.log(users[idx]);
+        
+
+        fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err, data) => {
+            return res.json({ success: true, id : id})
+        })
     })
     .delete((req, res) => {
-        res.json({status: 'Pending delete'})
+        return res.json({status: 'Pending delete'})
     })
 
 app.post("/api/users", (req, res) => {

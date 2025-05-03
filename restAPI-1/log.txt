@@ -6,3 +6,12 @@
 1746268576080 - ::1 - DELETE -/api/users/1001
 1746268582973 - ::1 - PUT -/api/users/1001
 1746268591723 - ::1 - GET -/api/users/1001
+1746280531716 - ::1 - PATCH - /api/users/1001
+1746280600578 - ::1 - PATCH - /api/users/1001
+1746280630258 - ::1 - PATCH - /api/users/1001
+1746280648118 - ::1 - PATCH - /api/users/1001
+1746284297101 - ::1 - PATCH - /api/users/1
+1746284389158 - ::1 - PATCH - /api/users/1
+1746285018540 - ::1 - PATCH - /api/users/1
+1746285516798 - ::1 - PATCH - /api/users/1
+1746285551225 - ::1 - PATCH - /api/users/1
