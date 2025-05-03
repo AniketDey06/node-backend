@@ -1,7 +1,6 @@
 const express = require("express");
 const fs = require("fs");
 const users = require("./MOCK_DATA.json");
-const { log } = require("console");
 
 const app = express();
 const PORT = 8000;
