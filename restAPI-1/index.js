@@ -5,8 +5,24 @@ const users = require("./MOCK_DATA.json")
 const app = express();
 const PORT = 8000;
 
+// Middlewares
 app.use(express.urlencoded({extended: false}));
 
+app.use((req, res, next) => {
+    fs.appendFile('log.txt', 
+        `\n${Date.now()} - ${req.ip} - ${req.method} -${req.path}`,
+        (err, data) => {
+            next();
+        }
+    );
+
+    next();
+    // return res.json({msg: "hello from Middleware1"})
+})
+
+
+
+// Routes 
 app.get('/', (req, res) => {
     return res.send("this is home")
 })
