@@ -12,11 +12,13 @@ app.use((req, res, next) => {
     fs.appendFile('log.txt', 
         `\n${Date.now()} - ${req.ip} - ${req.method} - ${req.path}`,
         (err, data) => {
+            if(err){
+                console.log("err: ",err);
+            }
             next();
         }
     );
 
-    next();
     // return res.json({msg: "hello from Middleware1"})
 })
 
@@ -53,6 +55,10 @@ app.route('/api/users/:id')
 
         const idx = users.findIndex((user) => user.id === id);
 
+        if (idx === -1) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
         users[idx] = {
             ...users[idx],
             ...body
@@ -62,7 +68,13 @@ app.route('/api/users/:id')
         
 
         fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err, data) => {
-            return res.json({ success: true, id : id})
+            if (err) {
+                console.error('File write error:', err);
+                return res.status(500).json({ error: 'Failed to write file' });
+            }
+    
+            // ✅ Respond ONLY here
+            return res.json({ success: true, id: id });
         })
     })
     .delete((req, res) => {
