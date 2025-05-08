@@ -1,20 +1,37 @@
 const express = require("express");
 require('dotenv').config();
+const path = require('path');
 
 const { conenectToMongiDB } = require("./utils/db")
 const URL = require('./model/url.model')
 const urlRoute = require('./routes/url.router')
+const staticRoute = require('./routes/static.router')
 
 const app = express();
 const PORT = process.env.PORT || 8001
 conenectToMongiDB(process.env.DB_URI).then(() => console.log("mongoDB Connected"))
 
-app.use(express.json())
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"))
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false}))
+
+app.use("/", staticRoute);
 
 app.use("/url", urlRoute);
 
-app.get('/:shortId', async (req, res) => {
+app.get("/test", async (req, res) => {
+    const allUrls = await URL.find({});
+    return res.render('home.view.ejs',{
+        urls: allUrls,
+    })
+})
+
+app.get('/url/:shortId', async (req, res) => {
     const shortId = req.params.shortId;
+    console.log("hit");
+    
     const entry = await URL.findOneAndUpdate(
         {
             shortId
@@ -27,6 +44,10 @@ app.get('/:shortId', async (req, res) => {
             },
         }
     )
+
+    if (!entry) {
+        return res.status(404).send("Short URL not found");
+    }
 
     res.redirect(entry.redirectURL);
 })
