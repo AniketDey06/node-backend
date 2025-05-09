@@ -1,8 +1,11 @@
 const express = require("express");
 require('dotenv').config();
 const path = require('path');
+const cookieParser = require('cookie-parser')
 
 const { conenectToMongiDB } = require("./utils/db")
+
+const { restrictToLoggedInUserOnly, checkAuth } = require('./middlewares/auth.middle')
 
 const URL = require('./model/url.model')
 
@@ -19,10 +22,11 @@ app.set("views", path.resolve("./views"))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}))
+app.use(cookieParser());
 
-app.use("/url", urlRoute);
+app.use("/url", restrictToLoggedInUserOnly, urlRoute);
 app.use("/user", userRoute);
-app.use("/", staticRoute);
+app.use("/", checkAuth, staticRoute);
 
 app.get("/test", async (req, res) => {
     const allUrls = await URL.find({});
@@ -33,7 +37,6 @@ app.get("/test", async (req, res) => {
 
 app.get('/url/:shortId', async (req, res) => {
     const shortId = req.params.shortId;
-    console.log("hit");
     
     const entry = await URL.findOneAndUpdate(
         {
