@@ -3,9 +3,12 @@ require('dotenv').config();
 const path = require('path');
 
 const { conenectToMongiDB } = require("./utils/db")
+
 const URL = require('./model/url.model')
+
 const urlRoute = require('./routes/url.router')
 const staticRoute = require('./routes/static.router')
+const userRoute = require('./routes/user.router')
 
 const app = express();
 const PORT = process.env.PORT || 8001
@@ -17,9 +20,9 @@ app.set("views", path.resolve("./views"))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}))
 
-app.use("/", staticRoute);
-
 app.use("/url", urlRoute);
+app.use("/user", userRoute);
+app.use("/", staticRoute);
 
 app.get("/test", async (req, res) => {
     const allUrls = await URL.find({});
