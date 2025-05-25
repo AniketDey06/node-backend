@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser')
 
 const { conenectToMongiDB } = require("./utils/db")
 
-const { restrictToLoggedInUserOnly, checkAuth } = require('./middlewares/auth.middle')
+const { checkForAuth, restrictTo } = require('./middlewares/auth.middle')
 
 const URL = require('./model/url.model')
 
@@ -23,10 +23,11 @@ app.set("views", path.resolve("./views"))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}))
 app.use(cookieParser());
+app.use(checkForAuth);
 
-app.use("/url", restrictToLoggedInUserOnly, urlRoute);
+app.use("/url", restrictTo(["NORMAL"]), urlRoute);
 app.use("/user", userRoute);
-app.use("/", checkAuth, staticRoute);
+app.use("/", staticRoute);
 
 app.get("/test", async (req, res) => {
     const allUrls = await URL.find({});
