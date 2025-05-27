@@ -4,6 +4,16 @@ const URL = require('../model/url.model')
 async function handleGenerateNewShortURL(req, res) {
     const body = req.body;
     if(!body.url) return res.status(400).json({ error: 'url is req!' })
+
+    const checkExistingEntry = await URL.findOne({
+        redirectURL: body.url,
+        createdBy: req.user._id,
+    })
+
+    if(checkExistingEntry){
+        return res.end("Short Url is alrady Exsists.")
+    }
+
     const shortID = shortid();
     await URL.create({
         shortId: shortID,
@@ -15,7 +25,6 @@ async function handleGenerateNewShortURL(req, res) {
     return res.render("home.view.ejs",{
         id: shortID,
     })
-    // return res.json({ id: shortID })
 }
 
 async function handleGetAnalytics(req, res) {
