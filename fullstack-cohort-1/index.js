@@ -1,14 +1,17 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import dbConnect from './utils/db.js'
 
 dotenv.config()
 
 const app = express()
 
+dbConnect()
+
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: process.env.BASE_URL,
         methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization']
     })
