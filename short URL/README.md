@@ -20,6 +20,25 @@ A full-stack URL Shortener built using Node.js, Express, and MongoDB, featuring 
 - **Authentication**: Custom middleware, Cookies
 - **Environment Variables**: dotenv
 
+## 📦 Dependencies
+
+| Package          | Purpose                                      |
+|------------------|----------------------------------------------|
+| `express`        | Web framework for Node.js                    |
+| `mongoose`       | ODM for MongoDB                              |
+| `dotenv`         | Load environment variables                   |
+| `ejs`            | Templating engine for rendering HTML         |
+| `cookie-parser`  | Parse cookies for authentication             |
+| `shortid`        | Generate short unique IDs                    |
+| `bcrypt`         | Password hashing for authentication          |
+| `jsonwebtoken`   | For creating and verifying tokens            |
+
+## 🧪 DevDependencies
+
+| Package     | Purpose                                                    |
+|-------------|------------------------------------------------------------|
+| `nodemon`   | Automatically restarts server on file changes (development only) |
+
 ## 📂 Folder Structure
 
 ```bash
