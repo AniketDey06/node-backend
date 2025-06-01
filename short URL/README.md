@@ -43,32 +43,36 @@ A full-stack URL Shortener built using Node.js, Express, and MongoDB, featuring 
 
 ```bash
 short-url/
-├── controllers/              # Controller logic for routes
-│   ├── url.controller.js
-│   └── user.controller.js
-├── middlewares/              # Custom authentication middleware
-│   └── auth.middle.js
-├── model/                    # Mongoose schemas
-│   ├── url.model.js
-│   └── user.model.js
+├── src/                      # Source code directory
+│   ├── controllers/          # Controller logic for routes
+│   │   ├── url.controller.js
+│   │   └── user.controller.js
+│   ├── middlewares/          # Custom authentication middleware
+│   │   └── auth.middleware.js
+│   ├── model/                # Mongoose schemas
+│   │   ├── url.model.js
+│   │   └── user.model.js
+│   ├── routes/               # Route definitions
+│   │   ├── static.router.js
+│   │   ├── url.router.js
+│   │   └── user.router.js
+│   ├── service/              # Business logic / reusable services
+│   │   └── auth.service.js
+│   ├── utils/                # Utility functions
+│   │   └── db.js
+│   └── views/                # EJS templates for frontend rendering
+│       ├── home.view.ejs
+│       ├── login.view.ejs
+│       └── signup.view.ejs
 ├── node_modules/             # Node.js dependencies
-├── routes/                   # Route definitions
-│   ├── static.router.js
-│   ├── url.router.js
-│   └── user.router.js
-├── service/                  # Business logic / reusable services
-│   └── auth.service.js
-├── utils/                    # Utility functions
-│   └── db.js                 # MongoDB connection setup
-├── views/                    # EJS templates for frontend rendering
-│   ├── home.view.ejs
-│   ├── login.view.ejs
-│   └── signup.view.ejs
 ├── .env                      # Environment variable declarations
+├── .env.example              # Environment variable template
 ├── .gitignore               # Ignored files for Git
 ├── index.js                 # Entry point of the application
+├── LICENSE                  # MIT License file
 ├── package.json             # Project metadata and scripts
-└── package-lock.json        # Dependency tree
+├── package-lock.json        # Dependency tree
+└── README.md                # Project documentation
 ```
 
 ## ✅ Getting Started
