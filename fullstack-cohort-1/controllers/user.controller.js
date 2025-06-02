@@ -41,31 +41,32 @@ const registerUser = async (req, res) => {
 
         await user.save()
 
-        const nodemailer = require("nodemailer");
+        // const nodemailer = require("nodemailer");
 
-        // Create a test account or replace with real credentials.
-        const transporter = nodemailer.createTransport({
-            host: process.env.MAILTRAP_HOST,
-            port: process.env.MAILTRAP_PORT,
-            secure: false, // true for 465, false for other ports
-            auth: {
-                user: process.env.MAILTRAP_USERNAME,
-                pass: process.env.MAILTRAP_PASSWORD,
-            },
-        });
+        // // Create a test account or replace with real credentials.
+        // const transporter = nodemailer.createTransport({
+        //     host: process.env.MAILTRAP_HOST,
+        //     port: process.env.MAILTRAP_PORT,
+        //     secure: false, // true for 465, false for other ports
+        //     auth: {
+        //         user: process.env.MAILTRAP_USERNAME,
+        //         pass: process.env.MAILTRAP_PASSWORD,
+        //     },
+        // });
 
-        const mailOption = {
-            from: process.env.MAILTRAP_SENDEREMAIL,
-            to: user.email,
-            subject: "verify Your email",
-            text: `Pleace click to on to the following link: ${process.env.BASE_URL}/api/v1/users/verify/${token}`, // plain‑text body
-            html: "<b>Hello world?</b>", // HTML body
-        }
+        // const mailOption = {
+        //     from: process.env.MAILTRAP_SENDEREMAIL,
+        //     to: user.email,
+        //     subject: "verify Your email",
+        //     text: `Pleace click to on to the following link: ${process.env.BASE_URL}/api/v1/users/verify/${token}`, // plain‑text body
+        //     html: "<b>Hello world?</b>", // HTML body
+        // }
 
-        await transporter.sendMail(mailOption);
+        // await transporter.sendMail(mailOption);
 
         res.status(201).json({
             message: "User registered success fully",
+            token,
             success: true,
         })
 
@@ -83,20 +84,25 @@ const verifyUser = async (req, res) => {
     const { token } = req.params;
     if (!token) {
         return res.status(400).json({
-            message: "invalid token"
+            message: "invalid token req"
         })
     }
 
     const user = await User.findOne({ verificationToken: token })
+    console.log(user);
 
     if (!user) {
         return res.status(400).json({
-            message: "invalid token"
+            message: "user not found"
         })
     }
     user.isVerified = true;
     user.verificationToken = undefined;
     await user.save()
+
+    return res.status(201).json({
+        message: "your Email hasbeen verified successfully",
+    })
 }
 
 const loginUser = async (req, res) => {
