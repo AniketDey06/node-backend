@@ -79,7 +79,6 @@ const registerUser = async (req, res) => {
     }
 };
 
-
 const verifyUser = async (req, res) => {
     const { token } = req.params;
     if (!token) {
@@ -165,8 +164,105 @@ const loginUser = async (req, res) => {
     }
 }
 
+const getProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password')
+        console.log("getProfile", user);
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "user not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            user
+        })
+        //     const data = req.user
+        //     console.log("profile controller",data);
+
+        //     return res.status(200).json({
+        //         message: "your profile",
+        //     })
+    } catch (error) {
+        res.status(400).json({
+            message: "User not registered",
+            error,
+            success: false,
+        })
+    }
+}
+
+const logout = async (req, res) => {
+    try {
+        res.cookie('token', '', {})
+        res.status(200).json({
+            success: true,
+            message: "log out"
+        })
+    } catch (error) {
+
+    }
+}
+
+const forgotPassword = async (req, res) => {
+    const { email } = req.body
+
+    if (!email) {
+        return res.status(400).json({
+            message: "Email field is required"
+        });
+    }
+
+    try {
+        const user = await User.findOne({ email })
+        console.log("try block", user);
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "user dose not exist",
+            });
+        }
+
+        const token = crypto.randomBytes(32).toString("hex");
+        user.resetPasswordToken = token;
+
+        const resetTokenValidity = Date.now() + (10 * 60 * 1000)
+        user.resetPasswordExpires = resetTokenValidity
+        
+        console.log("at the end", user);
+        await user.save()
+
+        res.status(201).json({
+            message: "Reset Password Token seted success fully",
+            token,
+            success: true,
+        })
+    } catch (error) {
+        console.error("Error in forgotPassword:", error);
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+
+    } catch (error) {
+
+    }
+}
+
 export {
     registerUser,
     verifyUser,
-    loginUser
+    loginUser,
+    getProfile,
+    logout,
+    forgotPassword,
+    resetPassword,
 }
