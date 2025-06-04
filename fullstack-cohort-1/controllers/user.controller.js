@@ -177,6 +177,7 @@ const getProfile = async (req, res) => {
 
         res.status(200).json({
             message: "user profile",
+            user,
         })
         //     const data = req.user
         //     console.log("profile controller",data);

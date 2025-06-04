@@ -8,7 +8,7 @@ export const isLoggedIn = async (req, res, next) => {
 
         if (!token) {
             console.log("no token");
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: "Authemtication Fail"
             })
@@ -22,16 +22,16 @@ export const isLoggedIn = async (req, res, next) => {
             next()
         } catch (error) {
             console.log("auth midd fail");
-            return res.status(500).json({
+            res.status(500).json({
                 success: false,
                 message: "Authemtication Fail"
             })
         }
-
-
     } catch (error) {
-
+        console.log("auth midd fail");
+        return res.status(500).json({
+            success: false,
+            message: "Internal server Error"
+        })
     }
-
-    next();
 }
