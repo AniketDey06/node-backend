@@ -175,9 +175,8 @@ const getProfile = async (req, res) => {
             });
         }
 
-        return res.status(200).json({
-            success: true,
-            user
+        res.status(200).json({
+            message: "user profile",
         })
         //     const data = req.user
         //     console.log("profile controller",data);
@@ -231,7 +230,7 @@ const forgotPassword = async (req, res) => {
 
         const resetTokenValidity = Date.now() + (10 * 60 * 1000)
         user.resetPasswordExpires = resetTokenValidity
-        
+
         console.log("at the end", user);
         await user.save()
 
@@ -251,6 +250,36 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
     try {
+        const { token } = req.params;
+        const { password } = req.body;
+
+        try {
+            const user = await User.findOne({
+                resetPasswordToken: token,
+                resetPasswordExpires: { $gt: Date.now() }
+            })
+
+            if (!user) {
+                return res.status(400).json({
+                    success: false,
+                    message: "user not found",
+                });
+            }
+
+            user.password = password;
+            user.resetPasswordToken = undefined
+            user.resetPasswordExpires = undefined
+            user.save()
+
+            res.status(201).json({
+                message: "password updated success fully",
+                user,
+                success: true,
+            })
+
+        } catch (error) {
+
+        }
 
     } catch (error) {
 
