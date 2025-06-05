@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
-export const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
     const { name, email, password, phone } = req.body;
     console.log(`in registerUser`, req.body);
 
@@ -63,7 +63,61 @@ export const registerUser = async (req, res) => {
     }
 }
 
-export const loginUser = async (req, res) => {
+const verifyUser = async (req, res) => {
+    const { token } = req.params;
+    console.log(`token:`, token);
+
+    if (!token) {
+        return res.status(400).json({
+            message: "token not found"
+        })
+    }
+
+    try {
+        const user = await prisma.user.findFirst({
+            where: {
+                verificationToken: token
+            }
+        })
+
+        console.log(user);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found or invalid token",
+            });
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                isVerified: true,
+            }
+        })
+
+        return res.status(201).json({
+            success: true,
+            token,
+            user: {
+                id: updatedUser.id,
+                email: updatedUser.email,
+                name: updatedUser.name,
+            },
+            message: "user verifed successfuly",
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error,
+            message: "verify faild",
+        })
+    }
+}
+
+const loginUser = async (req, res) => {
     const { email, password } = req.body
     console.log(`in loginUser`, req.body);
 
@@ -131,4 +185,10 @@ export const loginUser = async (req, res) => {
             message: "login faild",
         })
     }
+}
+
+export {
+    registerUser,
+    loginUser,
+    verifyUser,
 }
