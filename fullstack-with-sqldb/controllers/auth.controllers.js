@@ -2,15 +2,16 @@ import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
 export const registerUser = async (req, res) => {
     const { name, email, password, phone } = req.body;
+    console.log(`in registerUser`, req.body);
 
     if (!name || !email || !password || !phone) {
-        return res.status(400).json({
+        res.status(400).json({
             success: false,
             message: "All fields required"
         })
@@ -21,7 +22,8 @@ export const registerUser = async (req, res) => {
             where: { email }
         })
 
-        if (!existingUser) {
+        console.log(`in try`, existingUser);
+        if (existingUser) {
             return res.status(400).json({
                 success: false,
                 message: "user already exists",
@@ -32,7 +34,7 @@ export const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10)
         const verificationToken = crypto.randomBytes(32).toString("hex")
 
-        await prisma.user.create({
+        const user = await prisma.user.create({
             data: {
                 name,
                 email,
@@ -42,7 +44,16 @@ export const registerUser = async (req, res) => {
             }
         })
 
-
+        return res.status(201).json({
+            success: true,
+            verificationToken,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+            },
+            message: "register Successfully",
+        })
     } catch (error) {
         return res.status(400).json({
             success: false,
@@ -54,6 +65,7 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
     const { email, password } = req.body
+    console.log(`in loginUser`, req.body);
 
     if (!email || !password) {
         return res.status(400).json({
@@ -67,6 +79,8 @@ export const loginUser = async (req, res) => {
             where: { email }
         })
 
+        console.log(`in try`, user);
+
         if (!user) {
             return res.status(400).json({
                 success: false,
@@ -74,7 +88,7 @@ export const loginUser = async (req, res) => {
             })
         }
 
-        const isMatch = bcrypt.compare(password, user.password)
+        const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
             return res.status(400).json({
                 success: false,
@@ -93,7 +107,7 @@ export const loginUser = async (req, res) => {
             }
         )
 
-        res.cookieOptions = {
+        const cookieOptions = {
             httpOnly: true,
         }
 
@@ -114,7 +128,7 @@ export const loginUser = async (req, res) => {
         return res.status(400).json({
             success: false,
             error,
-            message: "Registration faild",
+            message: "login faild",
         })
     }
 }
