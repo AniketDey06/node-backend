@@ -230,7 +230,7 @@ const logoutUser = async (req, res) => {
                 id: req.user.id,
             }
         })
-        res.cookie(`token`, "",{})
+        res.cookie(`token`, "", {})
         return res.status(200).json({
             success: true,
             user,
@@ -245,10 +245,53 @@ const logoutUser = async (req, res) => {
     }
 }
 
+const forgotPassword = async (req, res) => {
+    const { email } = req.body
+    console.log(email );
+
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: "Email field is required",
+        });
+    }
+
+    try {
+        const restToken = crypto.randomBytes(32).toString('hex');
+        console.log(`in try`, restToken);
+        const restTokenExpiry = Date.now() + (10 * 60 * 1000)
+        console.log(`in try`, restTokenExpiry);
+
+        const user = await prisma.user.update({
+            where: {
+                email
+            },
+            data: {
+                passwordRestToken: restToken,
+                passwordRestExpiry: restTokenExpiry.toString(),
+            }
+        })
+
+
+        return res.status(200).json({
+            success: true,
+            user,
+            message: "Reset token generated and saved",
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error,
+            message: "forgotPassword faild",
+        })
+    }
+}
+
 export {
     registerUser,
     loginUser,
     verifyUser,
     getProfile,
     logoutUser,
+    forgotPassword,
 }
