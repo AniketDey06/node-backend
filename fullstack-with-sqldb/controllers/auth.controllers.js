@@ -187,8 +187,42 @@ const loginUser = async (req, res) => {
     }
 }
 
+const getProfile = async (req, res) => {
+    try {
+        const user = await prisma.user.findUnique({
+            // for excluding fields from the query 
+            // omit: { 
+            //     password: true
+            // },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                phone: true,
+                role: true
+            },
+            where: {
+                id: req.user.id,
+            }
+        })
+
+
+        return res.status(200).json({
+            message: "user profile",
+            user,
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error,
+            message: "getProfile faild",
+        })
+    }
+}
+
 export {
     registerUser,
     loginUser,
     verifyUser,
+    getProfile,
 }
