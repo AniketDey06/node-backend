@@ -247,7 +247,7 @@ const logoutUser = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
     const { email } = req.body
-    console.log(email );
+    console.log(email);
 
     if (!email) {
         return res.status(400).json({
@@ -287,6 +287,61 @@ const forgotPassword = async (req, res) => {
     }
 }
 
+const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params
+        const newPassword = req.body.password
+
+        console.log(token);
+        console.log(newPassword);
+
+        const user = await prisma.user.findFirst({
+            where: {
+                passwordRestToken: token
+            },
+        })
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Invalid or expired token",
+            });
+        }
+
+        if (user.passwordRestExpiry > Date.now()) {
+            return res.status(400).json({
+                success: false,
+                message: "Reset token has expired",
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+        const updatedUser = await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                password: hashedPassword,
+                passwordRestExpiry: null,
+                passwordRestToken: null
+            }
+        })
+
+        return res.status(200).json({
+            success: true,
+            updatedUser,
+            message: "Reset token generated and saved",
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error,
+            message: "resetPassword faild",
+        })
+    }
+}
+
 export {
     registerUser,
     loginUser,
@@ -294,4 +349,5 @@ export {
     getProfile,
     logoutUser,
     forgotPassword,
+    resetPassword,
 }
