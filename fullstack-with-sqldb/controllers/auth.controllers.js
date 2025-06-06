@@ -220,9 +220,35 @@ const getProfile = async (req, res) => {
     }
 }
 
+const logoutUser = async (req, res) => {
+    try {
+        const user = await prisma.user.findUnique({
+            select: {
+                email: true,
+            },
+            where: {
+                id: req.user.id,
+            }
+        })
+        res.cookie(`token`, "",{})
+        return res.status(200).json({
+            success: true,
+            user,
+            message: "logout successfuly",
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error,
+            message: "logout faild",
+        })
+    }
+}
+
 export {
     registerUser,
     loginUser,
     verifyUser,
     getProfile,
+    logoutUser,
 }
