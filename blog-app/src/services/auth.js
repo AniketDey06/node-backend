@@ -4,6 +4,7 @@ function creatUserToke (user) {
     const payload = {
         _id: user._id,
         email: user.email,
+        name: user.fullName,
         profileImageURL : user.profileImageURL,
         role: user.role 
     }
