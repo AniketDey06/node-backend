@@ -23,12 +23,16 @@ const signup = async (req, res) => {
 
 const signin = async (req, res) => {
     const { email, password } = req.body
-
-    const user = await User.matchPassword(email, password)
-
-    console.log('user', user);
-
-    return res.redirect("/");
+    try {
+        const token = await User.matchPassword(email, password)
+    
+        console.log('token', token);
+        return res.cookie("token", token).redirect("/");
+    } catch (error) {
+        return res.render("signin",{
+            error: 'Incorrect Email or Password'
+        });
+    }
 }
 
 export {
