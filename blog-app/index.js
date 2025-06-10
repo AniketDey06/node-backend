@@ -1,14 +1,27 @@
 import path from 'path'
 import express from 'express'
+import dotenv from 'dotenv'
+
+import dbConnect from './src/utils/db.js'
+
+import { userRoutes } from './src/routes/user.router.js'
+
+dotenv.config()
 
 const app = express()
-const PORT = 8000
+const PORT = process.env.PORT || 8000
+
+dbConnect()
 
 app.set('view engine', 'ejs')
 app.set('views', path.resolve('./src/views'))
 
+app.use(express.urlencoded({extended: false}))
+
 app.get('/', (req, res) => {
     res.render("home")
 })
+
+app.use('/user', userRoutes)
 
 app.listen(PORT, () => console.log(`server Started at ${PORT}`))
