@@ -1,4 +1,4 @@
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 import { createHmac, randomBytes } from "crypto"
 import { creatUserToke } from '../services/auth.js'
 
