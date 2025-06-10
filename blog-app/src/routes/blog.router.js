@@ -2,7 +2,7 @@ import { Router } from 'express'
 import multer from 'multer'
 import path from 'path'
 
-import { addNewBlogRender } from '../controllers/blog.controller.js'
+import { addNewBlogRender, uploadCoverImage } from '../controllers/blog.controller.js'
 
 const blogRouter = Router();
 
@@ -19,11 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 blogRouter.get('/add-new', addNewBlogRender)
-blogRouter.post('/', upload.single('coverImage'), (req, res) => {
-    console.log(req.body);
-    console.log(req.file);
-    return res.redirect("/");
-})
+blogRouter.post('/', upload.single('coverImage'), uploadCoverImage)
 
 export {
     blogRouter
