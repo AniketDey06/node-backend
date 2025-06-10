@@ -2,8 +2,10 @@ import path from 'path'
 import express from 'express'
 import dotenv from 'dotenv'
 
+// db connect module
 import dbConnect from './src/utils/db.js'
 
+// import routes
 import { userRoutes } from './src/routes/user.router.js'
 
 dotenv.config()
@@ -11,6 +13,7 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 8000
 
+// db connection
 dbConnect()
 
 app.set('view engine', 'ejs')
