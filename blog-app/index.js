@@ -7,7 +7,10 @@ import cookieParser from 'cookie-parser'
 import dbConnect from './src/utils/db.js'
 
 // import routes
-import { userRoutes } from './src/routes/user.router.js'
+import { userRouter } from './src/routes/user.router.js'
+import { blogRouter } from './src/routes/blog.router.js'
+
+// import middlewares
 import { checkForAuthenticationCookie } from './src/middlewares/authentication.middlewares.js'
 
 dotenv.config()
@@ -34,6 +37,7 @@ app.get('/', (req, res) => {
     })
 })
 
-app.use('/user', userRoutes)
+app.use('/user', userRouter)
+app.use('/blog', blogRouter)
 
 app.listen(PORT, () => console.log(`server Started at ${PORT}`))
