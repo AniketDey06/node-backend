@@ -6,6 +6,9 @@ import cookieParser from 'cookie-parser'
 // db connect module
 import dbConnect from './src/utils/db.js'
 
+// blog model
+import Blog from './src/models/Blog.model.js'
+
 // import routes
 import { userRouter } from './src/routes/user.router.js'
 import { blogRouter } from './src/routes/blog.router.js'
@@ -27,13 +30,16 @@ app.set('views', path.resolve('./src/views'))
 app.use(express.urlencoded({extended: false}))
 app.use(express.json()) // Add JSON parsing if you're handling JSON requests
 app.use(cookieParser())
+app.use(express.static(path.resolve('./public')))
 
 // Authentication middleware - applied globally
 app.use(checkForAuthenticationCookie("token"))
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    const allBlogs = await Blog.find({});
     res.render("home",{
-        user: req.user
+        user: req.user,
+        blogs: allBlogs,
     })
 })
 
