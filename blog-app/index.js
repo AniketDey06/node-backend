@@ -37,6 +37,7 @@ app.get('/', (req, res) => {
     })
 })
 
+// Routers 
 app.use('/user', userRouter)
 app.use('/blog', blogRouter)
 
