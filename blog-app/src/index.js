@@ -4,17 +4,17 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 
 // db connect module
-import dbConnect from './src/utils/db.js'
+import dbConnect from './utils/db.js'
 
 // blog model
-import Blog from './src/models/Blog.model.js'
+import Blog from './models/Blog.model.js'
 
 // import routes
-import { userRouter } from './src/routes/user.router.js'
-import { blogRouter } from './src/routes/blog.router.js'
+import { userRouter } from './routes/user.router.js'
+import { blogRouter } from './routes/blog.router.js'
 
 // import middlewares
-import { checkForAuthenticationCookie } from './src/middlewares/authentication.middlewares.js'
+import { checkForAuthenticationCookie } from './middlewares/authentication.middlewares.js'
 
 dotenv.config()
 
@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 8000
 dbConnect()
 
 app.set('view engine', 'ejs')
-app.set('views', path.resolve('./src/views'))
+app.set('views', path.resolve('./views'))
 
 app.use(express.urlencoded({extended: false}))
 app.use(express.json()) // Add JSON parsing if you're handling JSON requests
