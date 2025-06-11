@@ -17,7 +17,16 @@ const uploadCoverImage = async (req, res) => {
     return res.redirect(`/blog/${blog._id}`);
 }
 
+const getBlog = async (req, res) => {
+    const blog = await Blog.findById(req.params.id)
+    return res.render('blog', {
+        user: req.user,
+        blog,
+    })
+}
+
 export{
     addNewBlogRender,
-    uploadCoverImage
+    uploadCoverImage,
+    getBlog
 }
