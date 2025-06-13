@@ -1,3 +1,5 @@
+<img src="https://miro.medium.com/v2/resize:fit:1100/format:webp/0*BmLKgrU_qFtakYsB.png">
+
 # Aggregation Pipline
 
 An aggregation pipeline consists of one or more [**stages**](https://www.mongodb.com/docs/manual/reference/operator/aggregation-pipeline/#std-label-aggregation-pipeline-operator-reference) that process documents:
